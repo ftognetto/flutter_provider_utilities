@@ -11,7 +11,15 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
   final Widget child;
   final void Function(String error) onError;
 
-  const MessageListener({Key key, @required this.child, this.onError}) : super(key: key);
+  final void Function() onErrorTap;
+  final String errorTapLabel;
+  final TextStyle errorTapLabelStyle;
+
+  final void Function() onInfoTap;
+  final String infoTapLabel;
+  final TextStyle infoTapLabelStyle;
+
+  const MessageListener({Key key, @required this.child, this.onError, this.onErrorTap, this.errorTapLabel = 'Segnala', this.errorTapLabelStyle, this.onInfoTap, this.infoTapLabel = 'Info', this.infoTapLabelStyle}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +55,7 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
             children: [
               Icon(Icons.error),
               Expanded(child: Padding( padding:EdgeInsets.only(left:16), child:Text(error) )),
+              onErrorTap != null ? FlatButton(onPressed: onErrorTap, child: Text(errorTapLabel, style: errorTapLabelStyle ?? DefaultTextStyle.of(context))) : Container()
             ],
           ),
         ),
@@ -68,6 +77,7 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
             children: [
               Icon(Icons.info),
               Expanded(child: Padding( padding:EdgeInsets.only(left:16), child:Text(info) )),
+              onInfoTap != null ? FlatButton(onPressed: onInfoTap, child: Text(infoTapLabel, style: infoTapLabelStyle ?? DefaultTextStyle.of(context))) : Container()
             ],
           ),
         ),
