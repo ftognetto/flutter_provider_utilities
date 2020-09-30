@@ -13,17 +13,15 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
 
   final void Function() onErrorTap;
   final String errorTapLabel;
-  final TextStyle errorTapLabelStyle;
+  final Color errorTapLabelColor;
 
   final void Function() onInfoTap;
   final String infoTapLabel;
-  final TextStyle infoTapLabelStyle;
-
-  final EdgeInsets tapLabelPadding;
+  final Color infoTapLabelColor;
 
   final Duration snackBarDisplayTime;
 
-  const MessageListener({Key key, @required this.child, this.onError, this.onErrorTap, this.errorTapLabel = 'Segnala', this.errorTapLabelStyle, this.onInfoTap, this.infoTapLabel = 'Info', this.infoTapLabelStyle, this.snackBarDisplayTime = const Duration(milliseconds: 4000), this.tapLabelPadding = const EdgeInsets.all(8.0)}) : super(key: key);
+  const MessageListener({Key key, @required this.child, this.onError, this.onErrorTap, this.errorTapLabel = 'Segnala', this.errorTapLabelColor = Colors.white, this.onInfoTap, this.infoTapLabel = 'Info', this.infoTapLabelColor = Colors.white, this.snackBarDisplayTime = const Duration(milliseconds: 4000)}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,12 +53,16 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
         SnackBar(
           backgroundColor: Colors.red[600],
           duration: snackBarDisplayTime,
+          action: onErrorTap != null ? SnackBarAction(
+            label: errorTapLabel,
+            onPressed: onErrorTap,
+            textColor: errorTapLabelColor
+          ) : null,
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Icon(Icons.error),
-              Expanded(child: Padding( padding:EdgeInsets.only(left:16), child:Text(error) )),
-              onErrorTap != null ? FlatButton(onPressed: onErrorTap, padding: tapLabelPadding, materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, child: Text(errorTapLabel, style: errorTapLabelStyle ?? DefaultTextStyle.of(context).style)) : Container()
+              Expanded(child: Padding( padding:EdgeInsets.only(left:16), child:Text(error) ))
             ],
           ),
         ),
@@ -78,12 +80,16 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
         SnackBar(
           backgroundColor: Colors.lightBlue,
           duration: snackBarDisplayTime,
+          action: onErrorTap != null ? SnackBarAction(
+            label: infoTapLabel,
+            onPressed: onInfoTap,
+            textColor: infoTapLabelColor
+          ) : null,
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Icon(Icons.info),
-              Expanded(child: Padding( padding:EdgeInsets.only(left:16), child:Text(info) )),
-              onInfoTap != null ? FlatButton(onPressed: onInfoTap, padding: tapLabelPadding, materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, child: Text(infoTapLabel, style: infoTapLabelStyle ?? DefaultTextStyle.of(context).style)) : Container()
+              Expanded(child: Padding( padding:EdgeInsets.only(left:16), child:Text(info) ))
             ],
           ),
         ),
