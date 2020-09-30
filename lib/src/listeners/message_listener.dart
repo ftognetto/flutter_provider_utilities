@@ -19,7 +19,9 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
   final String infoTapLabel;
   final TextStyle infoTapLabelStyle;
 
-  const MessageListener({Key key, @required this.child, this.onError, this.onErrorTap, this.errorTapLabel = 'Segnala', this.errorTapLabelStyle, this.onInfoTap, this.infoTapLabel = 'Info', this.infoTapLabelStyle}) : super(key: key);
+  final Duration snackBarDisplayTime;
+
+  const MessageListener({Key key, @required this.child, this.onError, this.onErrorTap, this.errorTapLabel = 'Segnala', this.errorTapLabelStyle, this.onInfoTap, this.infoTapLabel = 'Info', this.infoTapLabelStyle, this.snackBarDisplayTime = Duration(milliseconds: 4000}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +52,7 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
       ..showSnackBar(
         SnackBar(
           backgroundColor: Colors.red[600],
+          duration: snackBarDisplayTime,
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -72,6 +75,7 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
       ..showSnackBar(
         SnackBar(
           backgroundColor: Colors.lightBlue,
+          duration: snackBarDisplayTime,
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
