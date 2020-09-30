@@ -55,7 +55,7 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
             children: [
               Icon(Icons.error),
               Expanded(child: Padding( padding:EdgeInsets.only(left:16), child:Text(error) )),
-              onErrorTap != null ? FlatButton(onPressed: onErrorTap, child: Text(errorTapLabel, style: errorTapLabelStyle ?? DefaultTextStyle.of(context))) : Container()
+              onErrorTap != null ? FlatButton(onPressed: onErrorTap, child: Text(errorTapLabel, style: errorTapLabelStyle ?? DefaultTextStyle.of(context).style)) : Container()
             ],
           ),
         ),
@@ -77,7 +77,7 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
             children: [
               Icon(Icons.info),
               Expanded(child: Padding( padding:EdgeInsets.only(left:16), child:Text(info) )),
-              onInfoTap != null ? FlatButton(onPressed: onInfoTap, child: Text(infoTapLabel, style: infoTapLabelStyle ?? DefaultTextStyle.of(context))) : Container()
+              onInfoTap != null ? FlatButton(onPressed: onInfoTap, child: Text(infoTapLabel, style: infoTapLabelStyle ?? DefaultTextStyle.of(context).style)) : Container()
             ],
           ),
         ),
