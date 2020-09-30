@@ -19,9 +19,11 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
   final String infoTapLabel;
   final TextStyle infoTapLabelStyle;
 
+  final EdgeInsets tapLabelPadding;
+
   final Duration snackBarDisplayTime;
 
-  const MessageListener({Key key, @required this.child, this.onError, this.onErrorTap, this.errorTapLabel = 'Segnala', this.errorTapLabelStyle, this.onInfoTap, this.infoTapLabel = 'Info', this.infoTapLabelStyle, this.snackBarDisplayTime = Duration(milliseconds: 4000}) : super(key: key);
+  const MessageListener({Key key, @required this.child, this.onError, this.onErrorTap, this.errorTapLabel = 'Segnala', this.errorTapLabelStyle, this.onInfoTap, this.infoTapLabel = 'Info', this.infoTapLabelStyle, this.snackBarDisplayTime = const Duration(milliseconds: 4000), this.tapLabelPadding = const EdgeInsets.all(8.0)}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +60,7 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
             children: [
               Icon(Icons.error),
               Expanded(child: Padding( padding:EdgeInsets.only(left:16), child:Text(error) )),
-              onErrorTap != null ? FlatButton(onPressed: onErrorTap, child: Text(errorTapLabel, style: errorTapLabelStyle ?? DefaultTextStyle.of(context).style)) : Container()
+              onErrorTap != null ? FlatButton(onPressed: onErrorTap, padding: tapLabelPadding, child: Text(errorTapLabel, style: errorTapLabelStyle ?? DefaultTextStyle.of(context).style)) : Container()
             ],
           ),
         ),
@@ -81,7 +83,7 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
             children: [
               Icon(Icons.info),
               Expanded(child: Padding( padding:EdgeInsets.only(left:16), child:Text(info) )),
-              onInfoTap != null ? FlatButton(onPressed: onInfoTap, child: Text(infoTapLabel, style: infoTapLabelStyle ?? DefaultTextStyle.of(context).style)) : Container()
+              onInfoTap != null ? FlatButton(onPressed: onInfoTap, padding: tapLabelPadding, child: Text(infoTapLabel, style: infoTapLabelStyle ?? DefaultTextStyle.of(context).style)) : Container()
             ],
           ),
         ),
