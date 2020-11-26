@@ -14,23 +14,27 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
   final void Function() onErrorTap;
   final String errorTapLabel;
   final Color errorTapLabelColor;
+  final Color errorBackgroundColor;
+  final Widget errorLeading;
 
   final void Function() onInfoTap;
   final String infoTapLabel;
   final Color infoTapLabelColor;
+  final Color infoBackgroundColor;
+  final Widget infoLeading;
 
   final Duration snackBarDisplayTime;
 
-  const MessageListener({Key key, @required this.child, this.onError, this.onErrorTap, this.errorTapLabel = 'Segnala', this.errorTapLabelColor = Colors.white, this.onInfoTap, this.infoTapLabel = 'Info', this.infoTapLabelColor = Colors.white, this.snackBarDisplayTime = const Duration(milliseconds: 4000)}) : super(key: key);
+  const MessageListener({Key key, @required this.child, this.onError, this.onErrorTap, this.errorTapLabel = 'Segnala', this.errorTapLabelColor = Colors.white, this.errorBackgroundColor = Colors.red, this.errorLeading = const Icon(Icons.error), this.onInfoTap, this.infoTapLabel = 'Info', this.infoTapLabelColor = Colors.white, this.infoBackgroundColor = Colors.lightBlue, this.infoLeading = const Icon(Icons.info), this.snackBarDisplayTime = const Duration(milliseconds: 4000)}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Selector<T, Tuple2<String, String>>(
-      selector: (ctx, model) => Tuple2(model.error, model.info),
-      shouldRebuild: (before, after) {
-        return before.item1 != after.item1 || before.item2 != after.item2;
-      },
-      builder: (context, tuple, child){
+        selector: (ctx, model) => Tuple2(model.error, model.info),
+        shouldRebuild: (before, after) {
+          return before.item1 != after.item1 || before.item2 != after.item2;
+        },
+        builder: (context, tuple, child){
         if (tuple.item1 != null) { 
           WidgetsBinding.instance.addPostFrameCallback((_){
             _handleError(context, tuple.item1); });
@@ -51,7 +55,7 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          backgroundColor: Colors.red[600],
+          backgroundColor: errorBackgroundColor,
           duration: snackBarDisplayTime,
           action: onErrorTap != null ? SnackBarAction(
             label: errorTapLabel,
@@ -61,7 +65,7 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.error),
+              errorLeading,
               Expanded(child: Padding( padding:EdgeInsets.only(left:16), child:Text(error) ))
             ],
           ),
@@ -78,7 +82,7 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          backgroundColor: Colors.lightBlue,
+          backgroundColor: infoBackgroundColor,
           duration: snackBarDisplayTime,
           action: onErrorTap != null ? SnackBarAction(
             label: infoTapLabel,
@@ -88,7 +92,7 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.info),
+              infoLeading,
               Expanded(child: Padding( padding:EdgeInsets.only(left:16), child:Text(info) ))
             ],
           ),
