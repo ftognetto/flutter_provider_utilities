@@ -12,16 +12,16 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
   final void Function(String error) onError;
 
   final void Function() onErrorTap;
-  final String errorTapLabel;
-  final Color errorTapLabelColor;
+  final String errorActionLabel;
+  final Color errorActionLabelColor;
 
   final void Function() onInfoTap;
-  final String infoTapLabel;
-  final Color infoTapLabelColor;
+  final String infoActionLabel;
+  final Color infoActionLabelColor;
 
   final Duration snackBarDisplayTime;
 
-  const MessageListener({Key key, @required this.child, this.onError, this.onErrorTap, this.errorTapLabel = 'Segnala', this.errorTapLabelColor = Colors.white, this.onInfoTap, this.infoTapLabel = 'Info', this.infoTapLabelColor = Colors.white, this.snackBarDisplayTime = const Duration(milliseconds: 4000)}) : super(key: key);
+  const MessageListener({Key key, @required this.child, this.onError, this.onErrorTap, this.errorActionLabel = 'Segnala', this.errorActionLabelColor = Colors.white, this.onInfoTap, this.infoActionLabel = 'Info', this.infoActionLabelColor = Colors.white, this.snackBarDisplayTime = const Duration(milliseconds: 4000)}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +54,9 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
           backgroundColor: Colors.red[600],
           duration: snackBarDisplayTime,
           action: onErrorTap != null ? SnackBarAction(
-            label: errorTapLabel,
+            label: errorActionLabel,
             onPressed: onErrorTap,
-            textColor: errorTapLabelColor
+            textColor: errorActionLabelColor
           ) : null,
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -81,9 +81,9 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
           backgroundColor: Colors.lightBlue,
           duration: snackBarDisplayTime,
           action: onErrorTap != null ? SnackBarAction(
-            label: infoTapLabel,
+            label: infoActionLabel,
             onPressed: onInfoTap,
-            textColor: infoTapLabelColor
+            textColor: infoActionLabelColor
           ) : null,
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
