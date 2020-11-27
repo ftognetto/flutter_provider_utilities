@@ -3,7 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:provider_utilities/src/mixin/message_notifier_mixin.dart';
+import 'package:flutter_provider_utilities/src/mixin/message_notifier_mixin.dart';
 import 'package:tuple/tuple.dart';
 
 /// A listener for [ChangeNotifier] that extends [MessageNotifierMixin] mixin

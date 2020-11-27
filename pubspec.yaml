@@ -1,5 +1,5 @@
-name: provider_utilities
-description: A new Flutter package project.
+name: flutter_provider_utilities
+description: A set of utilities for provider package.
 version: 0.0.1
 author:
 homepage:
