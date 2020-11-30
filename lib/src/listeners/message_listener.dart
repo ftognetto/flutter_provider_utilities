@@ -24,6 +24,10 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
 
   final Widget child;
 
+  /// How messages get displayed.
+  /// Default is with [SnackBar]
+  final MessageDisplayType displayType;
+
   /// Additional function that can be called when an error message occur
   final void Function(String error) onError;
 
@@ -64,8 +68,8 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
   /// [SnackBar] duration
   /// default is Duration(milliseconds: 4000)
   final Duration snackBarDisplayTime;
-
-  const MessageListener({Key key, @required this.child, this.onError, this.onErrorTap, this.errorActionLabel = 'Segnala', this.errorActionLabelColor = Colors.white, this.errorBackgroundColor = Colors.red, this.errorLeading = const Icon(Icons.error), this.onInfoTap, this.infoActionLabel = 'Info', this.infoActionLabelColor = Colors.white, this.infoBackgroundColor = Colors.lightBlue, this.infoLeading = const Icon(Icons.info), this.snackBarDisplayTime = const Duration(milliseconds: 4000)}) : super(key: key);
+  
+  const MessageListener({Key key, @required this.child, this.displayType = MessageDisplayType.Snackbar, this.onError, this.onErrorTap, this.errorActionLabel = 'Segnala', this.errorActionLabelColor = Colors.white, this.errorBackgroundColor = Colors.red, this.errorLeading = const Icon(Icons.error), this.onInfoTap, this.infoActionLabel = 'Info', this.infoActionLabelColor = Colors.white, this.infoBackgroundColor = Colors.lightBlue, this.infoLeading = const Icon(Icons.info), this.snackBarDisplayTime = const Duration(milliseconds: 4000)}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -118,29 +122,36 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
 
   void _handleInfo(BuildContext context, String info) {
     if (ModalRoute.of(context).isCurrent){
-      Scaffold.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          backgroundColor: infoBackgroundColor,
-          duration: snackBarDisplayTime,
-          action: onErrorTap != null ? SnackBarAction(
-            label: infoActionLabel,
-            onPressed: onInfoTap,
-            textColor: infoActionLabelColor
-          ) : null,
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              infoLeading,
-              Expanded(child: Padding( padding:EdgeInsets.only(left:16), child:Text(info) ))
-            ],
+      if (displayType == MessageDisplayType.Snackbar) {
+        Scaffold.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            backgroundColor: infoBackgroundColor,
+            duration: snackBarDisplayTime,
+            action: onErrorTap != null ? SnackBarAction(
+              label: infoActionLabel,
+              onPressed: onInfoTap,
+              textColor: infoActionLabelColor
+            ) : null,
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                infoLeading,
+                Expanded(child: Padding( padding:EdgeInsets.only(left:16), child:Text(info) ))
+              ],
+            ),
           ),
-        ),
-      );
+        );
+      }
+      else if (displayType == MessageDisplayType.Overlay) {
+
+      }
       Provider.of<T>(context, listen: false).clearInfo();
     }
     
   }
 
 }
+
+enum MessageDisplayType { Snackbar, Overlay }
