@@ -2,9 +2,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_provider_utilities/src/mixin/mixin.dart';
+import 'package:flutter_provider_utilities/src/mixin/notification_notifier_mixin.dart';
 import 'package:provider/provider.dart';
 
-class NotificationListener<T extends MessageNotifierMixin<Y>, Y> extends StatefulWidget {
+/// A listener for [ChangeNotifier] that extends [NotificationNotifierMixin] mixin
+/// Wrapping a widget with [NotificationListener] will display an [Overlay] called from the ChangeNotifier class with [notifyNotification]
+/// Useful to display in-app notifications
+/// 
+/// As an example:
+/// ```dart
+/// ChangeNotifierProvider.value(
+///   value: _model,
+///   child: Scaffold(
+///    appBar: AppBar(),
+///    body: NotificationListener<Model>(
+///       child: ListView()
+///    )
+///   )
+/// );
+/// ```
+class NotificationListener<T extends NotificationNotifierMixin<Y>, Y> extends StatefulWidget {
 
   final Widget child;
   final Widget Function(Y message) leadingBuilder;
@@ -19,7 +36,7 @@ class NotificationListener<T extends MessageNotifierMixin<Y>, Y> extends Statefu
   _NotificationListenerState createState() => _NotificationListenerState();
 }
 
-class _NotificationListenerState<T extends MessageNotifierMixin<Y>, Y> extends State<NotificationListener> with SingleTickerProviderStateMixin<NotificationListener> {
+class _NotificationListenerState<T extends NotificationNotifierMixin<Y>, Y> extends State<NotificationListener> with SingleTickerProviderStateMixin<NotificationListener> {
 
   OverlayEntry _notificationPopup;
   AnimationController controller;
@@ -34,13 +51,13 @@ class _NotificationListenerState<T extends MessageNotifierMixin<Y>, Y> extends S
   @override
   Widget build(BuildContext context) {
     return Selector<T, Y>(
-      selector: (ctx, model) => model.message,
+      selector: (ctx, model) => model.notification,
       shouldRebuild: (before, after) {
         return before != after;
       },
-      builder: (context, message, child){
+      builder: (context, notification, child){
         WidgetsBinding.instance.addPostFrameCallback((_){
-          _handleNotification(context, message); 
+          _handleNotification(context, notification); 
         });
         return child;
       },
@@ -52,7 +69,7 @@ class _NotificationListenerState<T extends MessageNotifierMixin<Y>, Y> extends S
     if (notification != null) {
       if (ModalRoute.of(context).isCurrent){
         _show(notification);
-        Provider.of<T>(context, listen: false).clearMessage();
+        Provider.of<T>(context, listen: false).clearNotification();
       }
     }
   }
