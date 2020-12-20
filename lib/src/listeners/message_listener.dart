@@ -102,7 +102,7 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
 
   void _handleError(BuildContext context, String error) {
     if (ModalRoute.of(context).isCurrent){
-      ScaffoldMessenger.of(context)
+      Scaffold.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
@@ -129,7 +129,7 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
 
   void _handleInfo(BuildContext context, String info) {
     if (ModalRoute.of(context).isCurrent){
-      ScaffoldMessenger.of(context)
+      Scaffold.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
