@@ -6,3 +6,6 @@
 
 ## [0.0.3] - 20/12/2020
 * Reverted to use Scaffold.of instead of ScaffoldMessanger
+
+## [0.0.4] - 20/12/2020
+* Resolved a bug in showInfo

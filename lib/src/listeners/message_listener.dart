@@ -135,7 +135,7 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
         SnackBar(
           backgroundColor: infoBackgroundColor,
           duration: snackBarDisplayTime,
-          action: onErrorTap != null ? SnackBarAction(
+          action: onInfoTap != null ? SnackBarAction(
             label: infoActionLabel,
             onPressed: onInfoTap,
             textColor: infoActionLabelColor
