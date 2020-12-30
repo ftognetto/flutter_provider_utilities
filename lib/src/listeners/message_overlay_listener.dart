@@ -1,12 +1,10 @@
 
 
 import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_provider_utilities/src/listeners/message_listener.dart';
 import 'package:flutter_provider_utilities/src/mixin/message_notifier_mixin.dart';
-import 'package:tuple/tuple.dart';
 
 /// A listener for [ChangeNotifier] that extends [MessageNotifierMixin] mixin
 /// Wrapping a widget with [MessageListener] will use [Scaffold.context] to show Snackbars called from the ChangeNotifier class with [notifyError] or [notifyInfo] methods
@@ -32,52 +30,52 @@ class MessageOverlayListener<T extends MessageNotifierMixin> extends StatefulWid
   /// Additional function that can be called when an error message occur
   final void Function(String error) onError;
 
-  /// if [onErrorTap] is not null an action will be added to the [SnackBar] when an error message occur
-  final void Function() onErrorTap;
+  /// if [onErrorTap] is not null an action will be added to the [Overlay] when an error message occur
+  final void Function(String error) onErrorTap;
 
-  /// Customize error [SnackBar] action label
-  final String errorActionLabel;
+  /// Customize error [Overlay] leading icon
+  /// default to Icons.error
+  final Widget errorLeading;
 
-  /// Customize error [SnackBar] action color
-  final Color errorActionLabelColor;
+  /// Customize error [Overlay] trailing widget
+  /// Default is empty
+  final Widget errorTrailing;
 
-  /// Customize error [SnackBar] background color
+  /// Customize error [Overlay] background color
   /// default to Colors.red[600]
   final Color errorBackgroundColor;
 
-  /// Customize error [SnackBar] leading icon
-  /// default to Icons.error
-  final Widget errorLeading;
+  /// Customize error [Overlay] text color
+  /// default to Colors.white
+  final Color errorColor;
 
   /// Additional function that can be called when an info message occur
   final void Function(String info) onInfo;
 
-  /// if [onInfoTap] is not null an action will be added to the [SnackBar] when an info message occur
-  final void Function() onInfoTap;
-  
-  /// Customize info [SnackBar] action label
-  final String infoActionLabel;
-
-  /// Customize info [SnackBar] action color
-  final Color infoActionLabelColor;
-
-  /// Customize info [SnackBar] background color
-  /// default to Colors.lightBlue
-  final Color infoBackgroundColor;
+  /// if [onInfoTap] is not null an action will be added to the [Overlay] when an info message occur
+  final void Function(String info) onInfoTap;
 
   /// Customize info [SnackBar] leading
   /// default to Icons.info
   final Widget infoLeading;
+  
+  /// Customize info [Overlay] trailing widget
+  /// Default is empty
+  final Widget infoTrailing;
 
-  /// [SnackBar] duration
-  /// default is Duration(milliseconds: 4000)
-  final Duration snackBarDisplayTime;
+  /// Customize info [Overlay] background color
+  /// default to Colors.red[600]
+  final Color infoBackgroundColor;
+
+  /// Customize info [Overlay] text color
+  /// default to Colors.white
+  final Color infoColor;
   
   const MessageOverlayListener({
     Key key, 
     @required this.child, 
-    this.onError, this.onErrorTap, this.errorActionLabel = 'Segnala', this.errorActionLabelColor = Colors.white, this.errorBackgroundColor = Colors.red, this.errorLeading = const Icon(Icons.error), 
-    this.onInfo, this.onInfoTap, this.infoActionLabel = 'Info', this.infoActionLabelColor = Colors.white, this.infoBackgroundColor = Colors.lightBlue, this.infoLeading = const Icon(Icons.info), this.snackBarDisplayTime = const Duration(milliseconds: 4000)
+    this.onError, this.onErrorTap, this.errorBackgroundColor = Colors.red, this.errorColor = Colors.white, this.errorLeading = const Icon(Icons.error), this.errorTrailing,
+    this.onInfo, this.onInfoTap, this.infoBackgroundColor = Colors.lightBlue, this.infoColor = Colors.white, this.infoLeading = const Icon(Icons.info), this.infoTrailing
   }) : super(key: key);
 
   @override
@@ -98,75 +96,57 @@ class _MessageOverlayListenerState<T extends MessageNotifierMixin> extends State
 
   @override
   Widget build(BuildContext context) {
-    return Selector<T, Tuple2<String, String>>(
-        selector: (ctx, model) => Tuple2(model.error, model.info),
-        shouldRebuild: (before, after) {
-          return before.item1 != after.item1 || before.item2 != after.item2;
-        },
-        builder: (context, tuple, child){
-        if (tuple.item1 != null) { 
-          WidgetsBinding.instance.addPostFrameCallback((_){
-            _handleError(context, tuple.item1); });
-        }
-        if (tuple.item2 != null) {
-          WidgetsBinding.instance.addPostFrameCallback((_){
-            _handleInfo(context, tuple.item2); });
-        }
-        return child;
-      },
-      child: widget.child
+    return MessageListener<T>(
+      child: widget.child, 
+      showError: (error) => _handleError(context, error), 
+      showInfo: (info) => _handleInfo(context, info)
     );
   }
 
   void _handleError(BuildContext context, String error) {
-    if (ModalRoute.of(context).isCurrent){
-      _showError(error);
-      Provider.of<T>(context, listen: false).clearError();
-    }
+    _close().then((_){
+      _notificationPopup = OverlayEntry(
+        builder: (context2) => _OverlayBody(
+          controller: controller, 
+          body: error,
+          leading: widget.errorLeading,
+          trailing: widget.errorTrailing,
+          backgroundColor: widget.errorBackgroundColor,
+          textColor: widget.errorColor,
+          onTap: widget.onErrorTap,
+          onClosed: (){
+            _close();
+          },
+        )
+        
+      );
+      Overlay.of(context).insert(_notificationPopup);
+      if (widget.onError != null) { widget.onError(error); }
+    });
   }
 
   void _handleInfo(BuildContext context, String info) {
     if (ModalRoute.of(context).isCurrent){
-      _showInfo(info);
-      Provider.of<T>(context, listen: false).clearInfo();
+      _close().then((_) {
+        _notificationPopup = OverlayEntry(
+          builder: (context2) => _OverlayBody(
+            controller: controller, 
+            body: info,
+            leading: widget.infoLeading,
+            trailing: widget.infoTrailing,
+            backgroundColor: widget.infoBackgroundColor,
+            textColor: widget.infoColor,
+            onTap: widget.onInfoTap,
+            onClosed: (){
+              _close();
+            },
+            
+          )
+        );
+        Overlay.of(context).insert(_notificationPopup);
+        if (widget.onInfo != null) { widget.onInfo(info); }
+      });
     }
-  }
-
-  Future<void> _showError(String error) async {
-
-    await _close();
-    _notificationPopup = OverlayEntry(
-      builder: (context2) => _OverlayBody(
-        controller: controller, 
-        body: error,
-        leading: widget.errorLeading,
-        color: widget.errorBackgroundColor ?? Theme.of(context).accentColor,
-        onClosed: (){
-          _close();
-        },
-      )
-      
-    );
-    Overlay.of(context).insert(_notificationPopup);
-
-  }
-
-  Future<void> _showInfo(String info) async {
-
-    await _close();
-    _notificationPopup = OverlayEntry(
-      builder: (context2) => _OverlayBody(
-        controller: controller, 
-        body: info,
-        leading: widget.infoLeading,
-        color: widget.infoBackgroundColor ?? Theme.of(context).primaryColor,
-        onClosed: (){
-          _close();
-        },
-      )
-    );
-    Overlay.of(context).insert(_notificationPopup);
-
   }
 
   Future<void> _close() async {
@@ -183,11 +163,12 @@ class _OverlayBody extends StatefulWidget {
   final String body;
   final Widget leading;
   final Widget trailing;
-  final Color color;
+  final Color backgroundColor;
+  final Color textColor;
   final void Function(String body) onTap;
   final void Function() onClosed;
 
-  _OverlayBody({@required this.controller, @required this.body, this.leading, this.trailing, this.color, this.onClosed, this.onTap, Key key}) : super(key: key);
+  _OverlayBody({@required this.controller, @required this.body, this.leading, this.trailing, @required this.backgroundColor, @required this.textColor, this.onClosed, this.onTap, Key key}) : super(key: key);
 
   @override
   _OverlayBodyState createState() => _OverlayBodyState();
@@ -235,7 +216,7 @@ class _OverlayBodyState extends State<_OverlayBody> {
                 padding: const EdgeInsets.all(16),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: widget.color,
+                    color: widget.backgroundColor,
                     borderRadius: BorderRadius.circular(16)
                   ),
                   
@@ -246,8 +227,9 @@ class _OverlayBodyState extends State<_OverlayBody> {
                       if (widget.leading != null) widget.leading,
                       if (widget.leading != null) SizedBox(width: 16),
                       Expanded(
-                        child: Text(widget.body)
+                        child: Text(widget.body, style: TextStyle(color: widget.textColor))
                       ),
+                      if (widget.trailing != null) SizedBox(width: 16),
                       if (widget.trailing != null) widget.trailing
                     ],
                   ),
