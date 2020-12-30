@@ -55,7 +55,7 @@ class MessageOverlayListener<T extends MessageNotifierMixin> extends StatefulWid
   /// if [onInfoTap] is not null an action will be added to the [Overlay] when an info message occur
   final void Function(String info) onInfoTap;
 
-  /// Customize info [SnackBar] leading
+  /// Customize info [Overlay] leading
   /// default to Icons.info
   final Widget infoLeading;
   
@@ -74,8 +74,8 @@ class MessageOverlayListener<T extends MessageNotifierMixin> extends StatefulWid
   const MessageOverlayListener({
     Key key, 
     @required this.child, 
-    this.onError, this.onErrorTap, this.errorBackgroundColor = Colors.red, this.errorColor = Colors.white, this.errorLeading = const Icon(Icons.error), this.errorTrailing,
-    this.onInfo, this.onInfoTap, this.infoBackgroundColor = Colors.lightBlue, this.infoColor = Colors.white, this.infoLeading = const Icon(Icons.info), this.infoTrailing
+    this.onError, this.onErrorTap, this.errorBackgroundColor = Colors.red, this.errorColor = Colors.white, this.errorLeading = const Icon(Icons.error, color: Colors.white), this.errorTrailing,
+    this.onInfo, this.onInfoTap, this.infoBackgroundColor = Colors.lightBlue, this.infoColor = Colors.white, this.infoLeading = const Icon(Icons.info, color: Colors.white), this.infoTrailing
   }) : super(key: key);
 
   @override
@@ -220,7 +220,7 @@ class _OverlayBodyState extends State<_OverlayBody> {
                     borderRadius: BorderRadius.circular(16)
                   ),
                   
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.all(16),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
