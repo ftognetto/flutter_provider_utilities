@@ -9,3 +9,6 @@
 
 ## [0.0.4] - 20/12/2020
 * Resolved a bug in showInfo
+
+## [0.0.5] - 20/12/2020
+* Added MessageSnackbarListener and MessageOverlayListener
