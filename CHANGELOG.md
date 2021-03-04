@@ -13,5 +13,5 @@
 ## [0.0.5] - 20/12/2020
 * Added MessageSnackbarListener and MessageOverlayListener
 
-## [1.0.0] - 04/03/2021
+## [1.0.0-nullsafety.1] - 04/03/2021
 * Migrate to null safety
