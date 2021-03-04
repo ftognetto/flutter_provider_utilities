@@ -33,43 +33,43 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
   final void Function(String info) showInfo;
   
   const MessageListener({
-    Key key, 
-    @required this.child, 
-    @required this.showError, 
-    @required this.showInfo,
+    Key? key, 
+    required this.child, 
+    required this.showError, 
+    required this.showInfo,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Selector<T, Tuple2<String, String>>(
+    return Selector<T, Tuple2<String?, String?>>(
         selector: (ctx, model) => Tuple2(model.error, model.info),
         shouldRebuild: (before, after) {
           return before.item1 != after.item1 || before.item2 != after.item2;
         },
         builder: (context, tuple, child){
         if (tuple.item1 != null) { 
-          WidgetsBinding.instance.addPostFrameCallback((_){
-            _handleError(context, tuple.item1); });
+          WidgetsBinding.instance!.addPostFrameCallback((_){
+            _handleError(context, tuple.item1!); });
         }
         if (tuple.item2 != null) {
-          WidgetsBinding.instance.addPostFrameCallback((_){
-            _handleInfo(context, tuple.item2); });
+          WidgetsBinding.instance!.addPostFrameCallback((_){
+            _handleInfo(context, tuple.item2!); });
         }
-        return child;
+        return child!;
       },
       child: child
     );
   }
 
   void _handleError(BuildContext context, String error) {
-    if (ModalRoute.of(context).isCurrent){
+    if (ModalRoute.of(context)!.isCurrent){
       showError(error);
       Provider.of<T>(context, listen: false).clearError();
     }
   }
 
   void _handleInfo(BuildContext context, String info) {
-    if (ModalRoute.of(context).isCurrent){
+    if (ModalRoute.of(context)!.isCurrent){
       showInfo(info);
       Provider.of<T>(context, listen: false).clearInfo();
     }

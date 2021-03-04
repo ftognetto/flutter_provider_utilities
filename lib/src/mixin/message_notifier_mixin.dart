@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 /// Useful used in combination with [MessageListener] to display error or information messages to users
 mixin MessageNotifierMixin on ChangeNotifier {
 
-  String _error;
-  String get error => _error;
+  String? _error;
+  String? get error => _error;
 
-  String _info;
-  String get info => _info;
+  String? _info;
+  String? get info => _info;
 
   void notifyError(dynamic error) {
     _error = error.toString();

@@ -24,13 +24,13 @@ import 'package:provider/provider.dart';
 class NotificationListener<T extends NotificationNotifierMixin<Y>, Y> extends StatefulWidget {
 
   final Widget child;
-  final Widget Function(Y message) leadingBuilder;
+  final Widget Function(Y message)? leadingBuilder;
   final Widget Function(Y message) titleBuilder;
-  final Widget Function(Y message) bodyBuilder;
-  final Widget Function(Y message) trailingBuilder;
-  final void Function(Y message) onTap;
+  final Widget Function(Y message)? bodyBuilder;
+  final Widget Function(Y message)? trailingBuilder;
+  final void Function(Y message)? onTap;
 
-  const NotificationListener({Key key, @required this.child, this.leadingBuilder, @required this.titleBuilder, this.bodyBuilder, this.trailingBuilder, this.onTap }): super(key: key);
+  const NotificationListener({Key? key, required this.child, this.leadingBuilder, required this.titleBuilder, this.bodyBuilder, this.trailingBuilder, this.onTap }): super(key: key);
 
   @override
   _NotificationListenerState createState() => _NotificationListenerState();
@@ -38,8 +38,8 @@ class NotificationListener<T extends NotificationNotifierMixin<Y>, Y> extends St
 
 class _NotificationListenerState<T extends NotificationNotifierMixin<Y>, Y> extends State<NotificationListener> with SingleTickerProviderStateMixin<NotificationListener> {
 
-  OverlayEntry _notificationPopup;
-  AnimationController controller;
+  OverlayEntry? _notificationPopup;
+  AnimationController? controller;
   final animationDuration = Duration(milliseconds: 400);
 
   @override
@@ -50,24 +50,24 @@ class _NotificationListenerState<T extends NotificationNotifierMixin<Y>, Y> exte
 
   @override
   Widget build(BuildContext context) {
-    return Selector<T, Y>(
+    return Selector<T, Y?>(
       selector: (ctx, model) => model.notification,
       shouldRebuild: (before, after) {
         return before != after;
       },
       builder: (context, notification, child){
-        WidgetsBinding.instance.addPostFrameCallback((_){
+        WidgetsBinding.instance!.addPostFrameCallback((_){
           _handleNotification(context, notification); 
         });
-        return child;
+        return child!;
       },
       child: widget.child
     );
   }
 
-  void _handleNotification(BuildContext context, Y notification) {
+  void _handleNotification(BuildContext context, Y? notification) {
     if (notification != null) {
-      if (ModalRoute.of(context).isCurrent){
+      if (ModalRoute.of(context)!.isCurrent){
         _show(notification);
         Provider.of<T>(context, listen: false).clearNotification();
       }
@@ -85,20 +85,20 @@ class _NotificationListenerState<T extends NotificationNotifierMixin<Y>, Y> exte
           titleBuilder: widget.titleBuilder,
           bodyBuilder: widget.bodyBuilder,
           trailingBuilder: widget.trailingBuilder,
-          onTap: (message) => widget.onTap(message),
+          onTap: (dynamic message) => widget.onTap!(message),
           onClosed: (){ 
             _close(); 
           },
         )
       
     );
-    Overlay.of(context).insert(_notificationPopup);
+    Overlay.of(context)!.insert(_notificationPopup!);
 
   }
 
   Future<void> _close() async {
       if (_notificationPopup != null) {
-        _notificationPopup.remove();
+        _notificationPopup!.remove();
         _notificationPopup = null;
       }
   }
@@ -109,16 +109,16 @@ class _NotificationListenerState<T extends NotificationNotifierMixin<Y>, Y> exte
 
 class _NotificationBody<Y> extends StatefulWidget {
 
-  final AnimationController controller;
+  final AnimationController? controller;
   final Y notification;
-  final Widget Function(Y notification) leadingBuilder;
+  final Widget Function(Y notification)? leadingBuilder;
   final Widget Function(Y notification) titleBuilder;
-  final Widget Function(Y notification) bodyBuilder;
-  final Widget Function(Y notification) trailingBuilder;
-  final void Function(Y message) onTap;
-  final void Function() onClosed;
+  final Widget Function(Y notification)? bodyBuilder;
+  final Widget Function(Y notification)? trailingBuilder;
+  final void Function(Y message)? onTap;
+  final void Function()? onClosed;
 
-  _NotificationBody({@required this.controller, @required this.notification, this.leadingBuilder, @required this.titleBuilder, this.bodyBuilder, this.trailingBuilder, this.onClosed, this.onTap, Key key}) : super(key: key);
+  _NotificationBody({required this.controller, required this.notification, this.leadingBuilder, required this.titleBuilder, this.bodyBuilder, this.trailingBuilder, this.onClosed, this.onTap, Key? key}) : super(key: key);
 
   @override
   _NotificationBodyState createState() => _NotificationBodyState();
@@ -126,14 +126,14 @@ class _NotificationBody<Y> extends StatefulWidget {
 
 class _NotificationBodyState extends State<_NotificationBody> {
 
-  Animation<double> positionAnimation;
+  late Animation<double> positionAnimation;
 
    @override
   void initState() {
     super.initState();
-    positionAnimation = Tween<double>(begin: -48.0, end: 24.0).animate(CurvedAnimation(parent: widget.controller, curve: Curves.linear));
-    widget.controller.forward();
-    widget.controller.addListener(_refresh);
+    positionAnimation = Tween<double>(begin: -48.0, end: 24.0).animate(CurvedAnimation(parent: widget.controller!, curve: Curves.linear));
+    widget.controller!.forward();
+    widget.controller!.addListener(_refresh);
     Future.delayed(Duration(seconds: 5),() {
       _close();
     });
@@ -153,19 +153,19 @@ class _NotificationBodyState extends State<_NotificationBody> {
           elevation: 10,
           child: InkWell(
             onTap: (){ 
-              if (widget.onTap != null) { widget.onTap(widget.notification); }
+              if (widget.onTap != null) { widget.onTap!(widget.notification); }
               _close(); 
             },
             child: Dismissible(
             key: Key('in_app_notification_dismissible_${widget.notification.id}'),
               direction: DismissDirection.up,
               onDismissed: (direction){
-                widget.onClosed();
+                widget.onClosed!();
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  if (widget.leadingBuilder != null) widget.leadingBuilder(widget.notification),
+                  if (widget.leadingBuilder != null) widget.leadingBuilder!(widget.notification),
                   if (widget.leadingBuilder != null) SizedBox(width: 16),
                   Expanded(
                     child: Column(
@@ -173,11 +173,11 @@ class _NotificationBodyState extends State<_NotificationBody> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         widget.titleBuilder(widget.notification),
-                        if (widget.bodyBuilder != null) widget.bodyBuilder(widget.notification)
+                        if (widget.bodyBuilder != null) widget.bodyBuilder!(widget.notification)
                       ],
                     )
                   ),
-                  if (widget.trailingBuilder != null) widget.trailingBuilder(widget.notification)
+                  if (widget.trailingBuilder != null) widget.trailingBuilder!(widget.notification)
                 ],
               ),
               
@@ -188,14 +188,14 @@ class _NotificationBodyState extends State<_NotificationBody> {
   }
 
   void _close() {
-    widget.controller.reverse().then((value) {
-       widget.onClosed();
+    widget.controller!.reverse().then((value) {
+       widget.onClosed!();
     });
   }
 
   @override
   void dispose() { 
-    widget.controller.removeListener(_refresh);
+    widget.controller!.removeListener(_refresh);
     super.dispose();
   }
 }

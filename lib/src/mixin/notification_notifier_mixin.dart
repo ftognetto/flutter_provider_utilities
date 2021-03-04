@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 /// Useful used in combination with [NotificationListener] to display in-app notifications
 mixin NotificationNotifierMixin<T> on ChangeNotifier {
 
-  T _notification;
-  T get notification => _notification;
+  T? _notification;
+  T? get notification => _notification;
 
   void notifyNotification(T notification) {
     _notification = notification;

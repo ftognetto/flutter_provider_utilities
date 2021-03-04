@@ -28,10 +28,10 @@ class MessageOverlayListener<T extends MessageNotifierMixin> extends StatefulWid
   final Widget child;
 
   /// Additional function that can be called when an error message occur
-  final void Function(String error) onError;
+  final void Function(String error)? onError;
 
   /// if [onErrorTap] is not null an action will be added to the [Overlay] when an error message occur
-  final void Function(String error) onErrorTap;
+  final void Function(String error)? onErrorTap;
 
   /// Customize error [Overlay] leading icon
   /// default to Icons.error
@@ -39,7 +39,7 @@ class MessageOverlayListener<T extends MessageNotifierMixin> extends StatefulWid
 
   /// Customize error [Overlay] trailing widget
   /// Default is empty
-  final Widget errorTrailing;
+  final Widget? errorTrailing;
 
   /// Customize error [Overlay] background color
   /// default to Colors.red[600]
@@ -50,10 +50,10 @@ class MessageOverlayListener<T extends MessageNotifierMixin> extends StatefulWid
   final Color errorColor;
 
   /// Additional function that can be called when an info message occur
-  final void Function(String info) onInfo;
+  final void Function(String info)? onInfo;
 
   /// if [onInfoTap] is not null an action will be added to the [Overlay] when an info message occur
-  final void Function(String info) onInfoTap;
+  final void Function(String info)? onInfoTap;
 
   /// Customize info [Overlay] leading
   /// default to Icons.info
@@ -61,7 +61,7 @@ class MessageOverlayListener<T extends MessageNotifierMixin> extends StatefulWid
   
   /// Customize info [Overlay] trailing widget
   /// Default is empty
-  final Widget infoTrailing;
+  final Widget? infoTrailing;
 
   /// Customize info [Overlay] background color
   /// default to Colors.red[600]
@@ -72,8 +72,8 @@ class MessageOverlayListener<T extends MessageNotifierMixin> extends StatefulWid
   final Color infoColor;
   
   const MessageOverlayListener({
-    Key key, 
-    @required this.child, 
+    Key? key, 
+    required this.child, 
     this.onError, this.onErrorTap, this.errorBackgroundColor = Colors.red, this.errorColor = Colors.white, this.errorLeading = const Icon(Icons.error, color: Colors.white), this.errorTrailing,
     this.onInfo, this.onInfoTap, this.infoBackgroundColor = Colors.lightBlue, this.infoColor = Colors.white, this.infoLeading = const Icon(Icons.info, color: Colors.white), this.infoTrailing
   }) : super(key: key);
@@ -84,8 +84,8 @@ class MessageOverlayListener<T extends MessageNotifierMixin> extends StatefulWid
 
 class _MessageOverlayListenerState<T extends MessageNotifierMixin> extends State<MessageOverlayListener<T>> with SingleTickerProviderStateMixin<MessageOverlayListener<T>> {
 
-  OverlayEntry _notificationPopup;
-  AnimationController controller;
+  OverlayEntry? _notificationPopup;
+  AnimationController? controller;
   final animationDuration = Duration(milliseconds: 400);
 
   @override
@@ -120,13 +120,13 @@ class _MessageOverlayListenerState<T extends MessageNotifierMixin> extends State
         )
         
       );
-      Overlay.of(context).insert(_notificationPopup);
-      if (widget.onError != null) { widget.onError(error); }
+      Overlay.of(context)!.insert(_notificationPopup!);
+      if (widget.onError != null) { widget.onError!(error); }
     });
   }
 
   void _handleInfo(BuildContext context, String info) {
-    if (ModalRoute.of(context).isCurrent){
+    if (ModalRoute.of(context)!.isCurrent){
       _close().then((_) {
         _notificationPopup = OverlayEntry(
           builder: (context2) => _OverlayBody(
@@ -143,15 +143,15 @@ class _MessageOverlayListenerState<T extends MessageNotifierMixin> extends State
             
           )
         );
-        Overlay.of(context).insert(_notificationPopup);
-        if (widget.onInfo != null) { widget.onInfo(info); }
+        Overlay.of(context)!.insert(_notificationPopup!);
+        if (widget.onInfo != null) { widget.onInfo!(info); }
       });
     }
   }
 
   Future<void> _close() async {
       if (_notificationPopup != null) {
-        _notificationPopup.remove();
+        _notificationPopup!.remove();
         _notificationPopup = null;
       }
   }
@@ -159,16 +159,16 @@ class _MessageOverlayListenerState<T extends MessageNotifierMixin> extends State
 
 class _OverlayBody extends StatefulWidget {
 
-  final AnimationController controller;
+  final AnimationController? controller;
   final String body;
-  final Widget leading;
-  final Widget trailing;
+  final Widget? leading;
+  final Widget? trailing;
   final Color backgroundColor;
   final Color textColor;
-  final void Function(String body) onTap;
-  final void Function() onClosed;
+  final void Function(String body)? onTap;
+  final void Function()? onClosed;
 
-  _OverlayBody({@required this.controller, @required this.body, this.leading, this.trailing, @required this.backgroundColor, @required this.textColor, this.onClosed, this.onTap, Key key}) : super(key: key);
+  _OverlayBody({required this.controller, required this.body, this.leading, this.trailing, required this.backgroundColor, required this.textColor, this.onClosed, this.onTap, Key? key}) : super(key: key);
 
   @override
   _OverlayBodyState createState() => _OverlayBodyState();
@@ -176,14 +176,14 @@ class _OverlayBody extends StatefulWidget {
 
 class _OverlayBodyState extends State<_OverlayBody> {
 
-  Animation<double> positionAnimation;
+  late Animation<double> positionAnimation;
 
    @override
   void initState() {
     super.initState();
-    positionAnimation = Tween<double>(begin: -48.0, end: 24.0).animate(CurvedAnimation(parent: widget.controller, curve: Curves.linear));
-    widget.controller.forward();
-    widget.controller.addListener(_refresh);
+    positionAnimation = Tween<double>(begin: -48.0, end: 24.0).animate(CurvedAnimation(parent: widget.controller!, curve: Curves.linear));
+    widget.controller!.forward();
+    widget.controller!.addListener(_refresh);
     Future.delayed(Duration(seconds: 5),() {
       _close();
     });
@@ -203,14 +203,14 @@ class _OverlayBodyState extends State<_OverlayBody> {
           elevation: 10,
           child: InkWell(
             onTap: (){ 
-              if (widget.onTap != null) { widget.onTap(widget.body); }
+              if (widget.onTap != null) { widget.onTap!(widget.body); }
               _close(); 
             },
             child: Dismissible(
             key: Key('in_app_notification_dismissible_${Random().nextDouble()}'),
               direction: DismissDirection.up,
               onDismissed: (direction){
-                widget.onClosed();
+                widget.onClosed!();
               },
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -224,13 +224,13 @@ class _OverlayBodyState extends State<_OverlayBody> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      if (widget.leading != null) widget.leading,
+                      if (widget.leading != null) widget.leading!,
                       if (widget.leading != null) SizedBox(width: 16),
                       Expanded(
                         child: Text(widget.body, style: TextStyle(color: widget.textColor))
                       ),
                       if (widget.trailing != null) SizedBox(width: 16),
-                      if (widget.trailing != null) widget.trailing
+                      if (widget.trailing != null) widget.trailing!
                     ],
                   ),
                 )
@@ -243,14 +243,14 @@ class _OverlayBodyState extends State<_OverlayBody> {
   }
 
   void _close() {
-    widget.controller.reverse().then((value) {
-       widget.onClosed();
+    widget.controller!.reverse().then((value) {
+       widget.onClosed!();
     });
   }
 
   @override
   void dispose() { 
-    widget.controller.removeListener(_refresh);
+    widget.controller!.removeListener(_refresh);
     super.dispose();
   }
 }
