@@ -1,6 +1,6 @@
 name: flutter_provider_utilities
 description: A set of utilities for provider package.
-version: 1.0.0-nullsafety.1
+version: 1.0.1
 homepage: https://www.quantos.it
 
 environment:
@@ -9,7 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^5.0.0-nullsafety.5 
+  provider: ^5.0.0
   tuple: ^2.0.0-nullsafety.0  
 
 dev_dependencies:
