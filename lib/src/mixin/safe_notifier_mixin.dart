@@ -8,7 +8,7 @@ mixin SafeNotifierMixin on ChangeNotifier {
   bool _mounted = true;
 
   notifySafe(){
-    if(_mounted) notifyListeners();
+    if(_mounted) { Future.delayed(Duration(seconds: 0), () => notifyListeners()); }
   }
 
   @override
