@@ -3,7 +3,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_provider_utilities/src/listeners/message_listener.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_provider_utilities/src/mixin/message_notifier_mixin.dart';
 
 /// A listener for [ChangeNotifier] that extends [MessageNotifierMixin] mixin
@@ -74,8 +73,8 @@ class MessageSnackbarListener<T extends MessageNotifierMixin> extends StatelessW
   const MessageSnackbarListener({
     Key? key, 
     required this.child, 
-    this.onError, this.onErrorTap, this.errorActionLabel = 'Segnala', this.errorActionLabelColor = Colors.white, this.errorBackgroundColor = Colors.red, this.errorLeading = const Icon(Icons.error), 
-    this.onInfo, this.onInfoTap, this.infoActionLabel = 'Info', this.infoActionLabelColor = Colors.white, this.infoBackgroundColor = Colors.lightBlue, this.infoLeading = const Icon(Icons.info), this.snackBarDisplayTime = const Duration(milliseconds: 4000)
+    this.onError, this.onErrorTap, this.errorActionLabel = 'Segnala', this.errorActionLabelColor = Colors.white, this.errorBackgroundColor = Colors.red, this.errorLeading = const Icon(Icons.error, color: Colors.white), 
+    this.onInfo, this.onInfoTap, this.infoActionLabel = 'Info', this.infoActionLabelColor = Colors.white, this.infoBackgroundColor = Colors.lightBlue, this.infoLeading = const Icon(Icons.info, color: Colors.white), this.snackBarDisplayTime = const Duration(milliseconds: 4000)
   }) : super(key: key);
 
   @override

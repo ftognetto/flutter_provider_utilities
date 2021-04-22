@@ -21,3 +21,6 @@
 
 ## [1.0.2] - 09/03/2021
 * Better notify safe
+
+## [1.0.3] - 22/04/2021
+* Changed icon default color in snackbar
