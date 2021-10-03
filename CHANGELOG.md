@@ -24,3 +24,6 @@
 
 ## [1.0.3] - 22/04/2021
 * Changed icon default color in snackbar
+
+## [1.0.4] - 03/10/2021
+* Provider 6.0.1
