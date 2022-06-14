@@ -93,7 +93,7 @@ class MessageSnackbarListener<T extends MessageNotifierMixin>
   }
 
   void _handleError(BuildContext context, String error) {
-    Scaffold.of(context)
+    ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
@@ -122,7 +122,7 @@ class MessageSnackbarListener<T extends MessageNotifierMixin>
   }
 
   void _handleInfo(BuildContext context, String info) {
-    Scaffold.of(context)
+    ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
