@@ -94,7 +94,7 @@ packages:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.1"
+    version: "6.0.3"
   quiver:
     dependency: transitive
     description:
