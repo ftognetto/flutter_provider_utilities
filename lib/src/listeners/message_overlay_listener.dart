@@ -196,7 +196,7 @@ class _OverlayBodyState extends State<_OverlayBody> {
   @override
   void initState() {
     super.initState();
-    positionAnimation = Tween<double>(begin: -48.0, end: 24.0).animate(
+    positionAnimation = Tween<double>(begin: -60.0, end: 24.0).animate(
         CurvedAnimation(parent: widget.controller!, curve: Curves.linear));
     widget.controller!.forward();
     widget.controller!.addListener(_refresh);
