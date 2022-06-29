@@ -30,3 +30,6 @@
 
 ## [1.0.5] - 17/6/2022
 * Clean and format
+
+## [1.0.6] - 29/6/2022
+* Changed repository
