@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 /// It provides two fields [error] and [info] and two methods [notifyError] and [notifyInfo]
 /// Useful used in combination with [MessageListener] to display error or information messages to users
 mixin MessageNotifierMixin on ChangeNotifier {
-
   String? _error;
   String? get error => _error;
 
@@ -29,5 +28,4 @@ mixin MessageNotifierMixin on ChangeNotifier {
   void clearInfo() {
     _info = null;
   }
-
 }

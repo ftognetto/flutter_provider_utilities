@@ -4,15 +4,16 @@ import 'package:flutter/foundation.dart';
 /// it provides a method [notifySafe] the can be called to [notifyListeners] in a safe manner
 /// Useful when using [ChangeNotifier] in pages that can be dismisses or popped
 mixin SafeNotifierMixin on ChangeNotifier {
-
   bool _mounted = true;
 
-  notifySafe(){
-    if(_mounted) { Future.delayed(Duration(seconds: 0), () => notifyListeners()); }
+  notifySafe() {
+    if (_mounted) {
+      Future.delayed(Duration(seconds: 0), () => notifyListeners());
+    }
   }
 
   @override
-  void dispose(){
+  void dispose() {
     _mounted = false;
     super.dispose();
   }

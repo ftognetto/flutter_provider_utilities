@@ -1,7 +1,8 @@
 name: flutter_provider_utilities
 description: A set of utilities for provider package.
-version: 1.0.5
+version: 1.0.6
 homepage: https://www.quantos.it
+repository: https://github.com/ftognetto/flutter_provider_utilities
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
